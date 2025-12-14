@@ -16,14 +16,34 @@ public class CustomInMemoryDatabaseApplication {
 			BufferedReader in = new BufferedReader(new InputStreamReader(input));
 			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(output));
 	while(true) {
+		in.read();
+		in.read();
+		in.read();
+		in.read();
+		char c = (char)in.read();
+		if(c != '$'){
+			System.out.println("invalid type,expecting a bulk string");
+		}
+		int size = Integer.parseInt(in.readLine());
+		in.read();
+		in.read();
+		char[] data = new char[size];
+		int totalRead = 0;
 
-		System.out.println(in.readLine());
-
+		while (totalRead < size) {
+			int charsRead = in.read(data, totalRead, size - totalRead);
+			if (charsRead == -1) {
+				break;
+			}
+			totalRead += charsRead;
+		}
+		String name = new String(data,0,totalRead);
+		System.out.println(name);
 		out.write("+OK\r\n");
 		out.flush();
 	}
 		}catch (Exception e){
-			e.printStackTrace();
+			e.getMessage();
 		}
 	}
 
