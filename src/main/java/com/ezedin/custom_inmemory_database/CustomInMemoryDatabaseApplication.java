@@ -4,12 +4,7 @@ package com.ezedin.custom_inmemory_database;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.Buffer;
-import java.util.ArrayList;
-import java.util.List;
 
-import static com.ezedin.custom_inmemory_database.responseCode.ARRAY;
-import static com.ezedin.custom_inmemory_database.responseCode.STRING;
 
 public class CustomInMemoryDatabaseApplication {
 
@@ -55,7 +50,7 @@ public class CustomInMemoryDatabaseApplication {
 	public static String readBlock(BufferedReader in) throws IOException {
 		char c = (char) in.read();
 		String line ="";
-		while(c=='\r'){
+		while(c!='\r'){
 			line =line.concat(String.valueOf(c));
 			c = (char) in.read();
 		}
@@ -74,15 +69,25 @@ public class CustomInMemoryDatabaseApplication {
 			case ARRAY:
 				return readArray(in);
 			case BULK:
-				return readBulk();
+				return readBulk(in);
 			default:
 				System.out.println("invalid type");
-				break;
+				return null;
 		}
 	}
 
-	private static request readBulk(BufferedReader in) throws IOException {
+	public static request readBulk(BufferedReader in) throws IOException {
+		int length = readInteger(in);
+		String bulk = readBlock(in);
 
+	return new request(
+			"bulk",
+			null,
+			0,
+			bulk,
+			null
+
+	);
 
 	}
 
